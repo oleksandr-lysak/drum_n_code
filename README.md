@@ -20,7 +20,10 @@ A modern RESTful API for managing tasks and subtasks with unlimited nesting, bui
 ---
 
 ## Quick Start (Docker)
-
+1. **Clone repository:**
+   ```bash
+   git clone https://github.com/oleksandr-lysak/drum_n_code.git
+   ```
 1. **Copy and configure environment:**
    ```bash
    cp .env.example .env
@@ -35,6 +38,7 @@ A modern RESTful API for managing tasks and subtasks with unlimited nesting, bui
    docker-compose exec app composer install
    docker-compose exec app php artisan key:generate
    docker-compose exec app php artisan migrate --seed
+   docker-compose exec app php artisan l5-swagger:generate
    ```
 4. **API available at:** [http://localhost:8080](http://localhost:8080)
 5. **Swagger docs:** [http://localhost:8080/api/documentation](http://localhost:8080/api/documentation)
@@ -78,7 +82,7 @@ See full request/response schemas and try requests in [Swagger UI](http://localh
 ---
 
 ## Technologies & Requirements
-- PHP 8.2+
+- PHP 8.3+
 - Laravel 12
 - MySQL 8+
 - Docker, Docker Compose
