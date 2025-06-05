@@ -1,0 +1,809 @@
+{
+	"info": {
+		"_postman_id": "e8c99ef5-7a90-48c2-bd12-2586ebcbf27e",
+		"name": "Todo List API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3417032"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () { pm.response.to.have.status(201); });",
+									"let data = pm.response.json();",
+									"pm.test(\"Response has user and token\", function () { pm.expect(data).to.have.property('user'); pm.expect(data).to.have.property('token'); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"user1@example.com\",\n  \"password\": \"password\",\n  \"password_confirmation\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+									"let data = pm.response.json();",
+									"pm.test(\"Response has token\", function () { pm.expect(data).to.have.property('token'); });",
+									"if (data.token) { pm.environment.set('token', data.token); }"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user1@example.com\",\n  \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+									"let data = pm.response.json();",
+									"pm.test(\"Response has message\", function () { pm.expect(data).to.have.property('message'); });"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "CRUD",
+					"item": [
+						{
+							"name": "Get Tasks",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+											"let json = pm.response.json();",
+											"pm.test(\"Response has data array\", function () { pm.expect(json.data).to.be.an('array'); });"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/tasks",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () { pm.response.to.have.status(201); });",
+											"let json = pm.response.json();",
+											"pm.test(\"Response has id\", function () { pm.expect(json.data).to.have.property('id'); });"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"todo\",\n  \"priority\": 3,\n  \"title\": \"Test Task\",\n  \"description\": \"Test description\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/tasks",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Child Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 201\", function () { pm.response.to.have.status(201); });",
+											"let json = pm.response.json();",
+											"pm.test(\"Response has id\", function () { pm.expect(json.data).to.have.property('id'); });"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"todo\",\n  \"priority\": 3,\n  \"parent_id\": 2,\n  \"title\": \"Subtask 1.1.1\",\n  \"description\": \"Test description\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/tasks",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+											"let json = pm.response.json();",
+											"pm.test(\"Response has id\", function () { pm.expect(json.data).to.have.property('id'); });"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Updated title\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/tasks/1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Show Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+											"let json = pm.response.json();",
+											"pm.test(\"Response has id\", function () { pm.expect(json.data).to.have.property('id'); });"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/tasks/1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200 or 204\", function () { pm.expect([200,204]).to.include(pm.response.code); });"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/tasks/1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Mark as Done",
+					"item": [
+						{
+							"name": "Mark Task as Done",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+											"let json = pm.response.json();",
+											"pm.test(\"Response has id\", function () { pm.expect(json.data).to.have.property('id'); });"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/tasks/1/done",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks",
+										"1",
+										"done"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Filters",
+					"item": [
+						{
+							"name": "Filter Tasks by Status",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+											"let json = pm.response.json();",
+											"pm.test(\"All tasks have status todo\", function () { json.data.forEach(t => pm.expect(t.status).to.eql('todo')); });"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/tasks?status=todo",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks"
+									],
+									"query": [
+										{
+											"key": "status",
+											"value": "todo"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Filter Tasks by Priority",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+											"let json = pm.response.json();",
+											"pm.test(\"All tasks have priority 3\", function () { json.data.forEach(t => pm.expect(t.priority).to.eql(3)); });"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/tasks?priority=3",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks"
+									],
+									"query": [
+										{
+											"key": "priority",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Fulltext Search Tasks",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+											"let json = pm.response.json();",
+											"pm.test(\"At least one task found\", function () { pm.expect(json.data.length).to.be.above(0); });"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/tasks?search=Test",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "Test"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sort Tasks by Priority Desc and CreatedAt Asc",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+											"let json = pm.response.json();",
+											"pm.test(\"Tasks are sorted by priority desc, created_at asc\", function () {\n  let arr = json.data;\n  let sorted = arr.slice().sort((a, b) => {\n    if (b.priority !== a.priority) return b.priority - a.priority;\n    return new Date(a.created_at) - new Date(b.created_at);\n  });\n  pm.expect(arr).to.eql(sorted);\n});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/tasks?sort=priority:desc,created_at:asc",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks"
+									],
+									"query": [
+										{
+											"key": "sort",
+											"value": "priority:desc,created_at:asc"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Negative",
+					"item": [
+						{
+							"name": "Cannot Edit Another User's Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 403\", function () { pm.response.to.have.status(403); });"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token_other}}"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Hacked\"\n}"
+								},
+								"url": {
+									"raw": "{{base_url}}/tasks/1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks",
+										"1"
+									]
+								},
+								"description": "## Update Task\n\nThis endpoint allows you to update an existing task identified by its unique ID.\n\n### Request\n\n- **Method**: `PUT`\n    \n- **Endpoint**: `{{base_url}}/tasks/1`\n    \n\n### Request Body\n\nThe request body must be in JSON format and should include the following parameter:\n\n- **title** (string): The new title for the task. This parameter is required.\n    \n\n### Response\n\nThe expected response format is JSON.\n\n- **Status Code**: `401 Unauthorized`\n    \n- **Content-Type**: `application/json`\n    \n\nThe response will contain a message indicating the reason for the unauthorized status.\n\n### Notes\n\nEnsure that you have the necessary permissions to update the task. A `401 Unauthorized` status indicates that the request lacks valid authentication credentials."
+							},
+							"response": []
+						},
+						{
+							"name": "Cannot Delete Another User's Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 403\", function () { pm.response.to.have.status(403); });"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token_other}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/tasks/1",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Cannot Delete Completed Task",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 422 or 403\", function () { pm.expect([422,403]).to.include(pm.response.code); });"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/tasks/2",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks",
+										"2"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Cannot Mark as Done with Incomplete Subtasks",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 422 or 403\", function () { pm.expect([409]).to.include(pm.response.code); });"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{token}}"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/tasks/1/done",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"tasks",
+										"1",
+										"done"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080/api"
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "token_other",
+			"value": ""
+		}
+	]
+}
